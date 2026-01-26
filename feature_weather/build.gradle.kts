@@ -1,14 +1,18 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
     namespace = "com.example.weatherpulse.feature.weather"
-    compileSdk = 34
+
+    compileSdk {
+        version = release(36)
+    }
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 29
     }
 
     buildFeatures {
