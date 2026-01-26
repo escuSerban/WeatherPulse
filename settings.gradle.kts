@@ -21,4 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "Weather Pulse"
 include(":app")
+include(":core")
+include(":feature_weather")
  
