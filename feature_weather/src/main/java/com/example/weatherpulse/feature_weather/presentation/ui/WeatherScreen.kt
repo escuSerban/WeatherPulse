@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.weatherpulse.feature_weather.domain.model.WeatherForecast
 import com.example.weatherpulse.feature_weather.presentation.WeatherViewModel
+import com.example.weatherpulse.feature_weather.presentation.util.toFormattedDate
 
 @Composable
 fun WeatherScreen(
@@ -39,7 +40,10 @@ fun WeatherScreen(
         if (state.isLoading) {
             CircularProgressIndicator()
         } else if (state.error != null) {
-            Text(text = state.error!!, color = MaterialTheme.colorScheme.error)
+            Text(
+                text = state.error ?: "An unknown error occurred.",
+                color = MaterialTheme.colorScheme.error
+            )
         } else {
             // Today's Weather
             state.todaysWeather?.let {
@@ -99,9 +103,9 @@ fun TodayWeatherSection(weather: WeatherForecast) {
             Text(text = "Today", style = MaterialTheme.typography.headlineSmall)
             Text(text = "${weather.temp.toInt()}°C", style = MaterialTheme.typography.displayMedium)
             Text(text = weather.description, style = MaterialTheme.typography.bodyLarge)
-            
+
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceAround
@@ -136,7 +140,10 @@ fun WeeklyWeatherItem(weather: WeatherForecast) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Date: ${weather.date}", style = MaterialTheme.typography.bodyMedium)
+            Text(
+                text = weather.date.toFormattedDate(),
+                style = MaterialTheme.typography.bodyMedium
+            )
             Text(text = "${weather.temp.toInt()}°C", style = MaterialTheme.typography.bodyLarge)
             Text(text = weather.description, style = MaterialTheme.typography.bodySmall)
         }
