@@ -10,7 +10,7 @@ data class OneCallDto(
     @SerializedName("timezone")
     val timezone: String,
     @SerializedName("timezone_offset")
-    val timezone_offset: Int,
+    val timezoneOffset: Int,
     @SerializedName("current")
     val current: CurrentWeatherDto,
     @SerializedName("hourly")
@@ -29,13 +29,13 @@ data class CurrentWeatherDto(
     @SerializedName("temp")
     val temp: Double,
     @SerializedName("feels_like")
-    val feels_like: Double,
+    val feelsLike: Double,
     @SerializedName("pressure")
     val pressure: Int,
     @SerializedName("humidity")
     val humidity: Int,
     @SerializedName("dew_point")
-    val dew_point: Double,
+    val dewPoint: Double,
     @SerializedName("uvi")
     val uvi: Double,
     @SerializedName("clouds")
@@ -43,9 +43,9 @@ data class CurrentWeatherDto(
     @SerializedName("visibility")
     val visibility: Int,
     @SerializedName("wind_speed")
-    val wind_speed: Double,
+    val windSpeed: Double,
     @SerializedName("wind_deg")
-    val wind_deg: Int,
+    val windDeg: Int,
     @SerializedName("weather")
     val weather: List<WeatherDto>
 )
@@ -56,13 +56,13 @@ data class HourlyWeatherDto(
     @SerializedName("temp")
     val temp: Double,
     @SerializedName("feels_like")
-    val feels_like: Double,
+    val feelsLike: Double,
     @SerializedName("pressure")
     val pressure: Int,
     @SerializedName("humidity")
     val humidity: Int,
     @SerializedName("dew_point")
-    val dew_point: Double,
+    val dewPoint: Double,
     @SerializedName("uvi")
     val uvi: Double,
     @SerializedName("clouds")
@@ -70,9 +70,9 @@ data class HourlyWeatherDto(
     @SerializedName("visibility")
     val visibility: Int,
     @SerializedName("wind_speed")
-    val wind_speed: Double,
+    val windSpeed: Double,
     @SerializedName("wind_deg")
-    val wind_deg: Int,
+    val windDeg: Int,
     @SerializedName("weather")
     val weather: List<WeatherDto>,
     @SerializedName("pop")
@@ -89,17 +89,17 @@ data class DailyWeatherDto(
     @SerializedName("temp")
     val temp: TempDto,
     @SerializedName("feels_like")
-    val feels_like: FeelsLikeDto,
+    val feelsLike: FeelsLikeDto,
     @SerializedName("pressure")
     val pressure: Int,
     @SerializedName("humidity")
     val humidity: Int,
     @SerializedName("dew_point")
-    val dew_point: Double,
+    val dewPoint: Double,
     @SerializedName("wind_speed")
-    val wind_speed: Double,
+    val windSpeed: Double,
     @SerializedName("wind_deg")
-    val wind_deg: Int,
+    val windDeg: Int,
     @SerializedName("weather")
     val weather: List<WeatherDto>,
     @SerializedName("clouds")

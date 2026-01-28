@@ -11,12 +11,12 @@ fun CurrentWeatherDto.toWeatherForecast(): WeatherForecast {
     return WeatherForecast(
         date = this.dt,
         temp = this.temp,
-        description = this.weather.firstOrNull()?.description ?: "",
-        icon = this.weather.firstOrNull()?.icon ?: "",
+        description = this.weather.firstOrNull()?.description.orEmpty(),
+        icon = this.weather.firstOrNull()?.icon.orEmpty(),
         sunrise = this.sunrise,
         sunset = this.sunset,
         humidity = this.humidity,
-        windSpeed = this.wind_speed
+        windSpeed = this.windSpeed
     )
 }
 
@@ -27,11 +27,11 @@ fun DailyWeatherDto.toWeatherForecast(): WeatherForecast {
     return WeatherForecast(
         date = this.dt,
         temp = this.temp.day,
-        description = this.weather.firstOrNull()?.description ?: "",
-        icon = this.weather.firstOrNull()?.icon ?: "",
+        description = this.weather.firstOrNull()?.description.orEmpty(),
+        icon = this.weather.firstOrNull()?.icon.orEmpty(),
         sunrise = this.sunrise,
         sunset = this.sunset,
         humidity = this.humidity,
-        windSpeed = this.wind_speed
+        windSpeed = this.windSpeed
     )
 }
