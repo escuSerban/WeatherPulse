@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -25,8 +26,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.example.weatherpulse.feature_weather.domain.model.WeatherForecast
 import com.example.weatherpulse.feature_weather.presentation.WeatherViewModel
 import com.example.weatherpulse.feature_weather.presentation.util.toFormattedDate
@@ -39,8 +42,6 @@ fun WeatherScreen(
     val state by viewModel.state.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    // This effect will run when `state.isLoading` changes.
-    // When loading finishes (isLoading becomes false), it hides the keyboard.
     LaunchedEffect(state.isLoading) {
         if (!state.isLoading) {
             keyboardController?.hide()
@@ -53,7 +54,6 @@ fun WeatherScreen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Search Bar
         SearchBar(
             query = state.searchQuery,
             onQueryChange = viewModel::onSearchQueryChange,
@@ -70,14 +70,12 @@ fun WeatherScreen(
                 color = MaterialTheme.colorScheme.error
             )
         } else {
-            // Today's Weather
             state.todaysWeather?.let {
                 TodayWeatherSection(it)
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Weekly Forecast
             if (state.weeklyWeather.isNotEmpty()) {
                 Text(
                     text = "Weekly Forecast",
@@ -126,6 +124,7 @@ fun TodayWeatherSection(weather: WeatherForecast) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(text = "Today", style = MaterialTheme.typography.headlineSmall)
+            WeatherIcon(iconCode = weather.icon, size = 100.dp)
             Text(text = "${weather.temp.toInt()}°C", style = MaterialTheme.typography.displayMedium)
             Text(text = weather.description, style = MaterialTheme.typography.bodyLarge)
 
@@ -160,26 +159,32 @@ fun WeeklyWeatherItem(weather: WeatherForecast) {
     ) {
         Row(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(horizontal = 16.dp, vertical = 8.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = weather.date.toFormattedDate(),
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1.5f),
                 style = MaterialTheme.typography.bodyMedium
             )
             Text(
                 text = "${weather.temp.toInt()}°C",
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(0.8f),
                 style = MaterialTheme.typography.bodyLarge
             )
-            Text(
-                text = weather.description,
+            Column(
                 modifier = Modifier.weight(1f),
-                style = MaterialTheme.typography.bodySmall
-            )
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                WeatherIcon(iconCode = weather.icon, size = 50.dp)
+                Text(
+                    text = weather.description,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
         }
     }
 }
@@ -190,4 +195,13 @@ fun WeatherDetailItem(label: String, value: String) {
         Text(text = label, style = MaterialTheme.typography.labelSmall)
         Text(text = value, style = MaterialTheme.typography.bodyMedium)
     }
+}
+
+@Composable
+fun WeatherIcon(iconCode: String, size: Dp) {
+    AsyncImage(
+        model = "https://openweathermap.org/img/wn/$iconCode@4x.png",
+        contentDescription = "Weather Icon",
+        modifier = Modifier.size(size)
+    )
 }
