@@ -9,7 +9,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
 import retrofit2.Retrofit
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -24,8 +26,11 @@ object WeatherModule {
 
     @Provides
     @Singleton
-    fun provideGetWeather(repository: WeatherRepository): GetWeather {
-        return GetWeather(repository)
+    fun provideGetWeather(
+        repository: WeatherRepository,
+        @Named("ioDispatcher") ioDispatcher: CoroutineDispatcher
+    ): GetWeather {
+        return GetWeather(repository, ioDispatcher)
     }
 }
 

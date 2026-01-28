@@ -11,6 +11,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -49,5 +50,6 @@ object CoreNetworkModule {
     }
 
     @Provides
-    fun provideDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
+    @Named("ioDispatcher")
+    fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
 }
