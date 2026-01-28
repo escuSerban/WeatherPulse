@@ -25,7 +25,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "API_KEY", "\"${properties.getProperty("apiKey")}\"")
     }
 
     buildTypes {
@@ -51,6 +50,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":feature_weather"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

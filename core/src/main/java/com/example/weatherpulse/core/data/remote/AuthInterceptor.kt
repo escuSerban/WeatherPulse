@@ -1,6 +1,6 @@
 package com.example.weatherpulse.core.data.remote
 
-import com.example.weatherpulse.BuildConfig
+import com.example.weatherpulse.core.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject

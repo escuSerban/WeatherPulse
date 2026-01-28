@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.library")
     alias(libs.plugins.kotlin.android)
@@ -11,6 +13,12 @@ android {
 
     defaultConfig {
         minSdk = 29
+
+        buildConfigField("String", "API_KEY", "\"${Properties().getProperty("apiKey")}\"")
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     compileOptions {
