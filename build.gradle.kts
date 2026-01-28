@@ -6,3 +6,15 @@ plugins {
     alias(libs.plugins.kotlin.ksp) apply false
     alias(libs.plugins.hilt) apply false
 }
+
+buildscript {
+    repositories {
+        google()
+        flatDir { dirs("libs") }
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1")
+    }
+}

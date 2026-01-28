@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.ksp)
+    // Secure API key
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -13,8 +15,6 @@ android {
 
     defaultConfig {
         minSdk = 29
-
-        buildConfigField("String", "API_KEY", "\"${Properties().getProperty("apiKey")}\"")
     }
 
     buildFeatures {
@@ -28,6 +28,10 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+}
+
+secrets {
+    defaultPropertiesFileName = "local.properties"
 }
 
 dependencies {
