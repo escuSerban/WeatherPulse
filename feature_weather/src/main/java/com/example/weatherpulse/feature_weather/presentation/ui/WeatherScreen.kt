@@ -142,10 +142,19 @@ fun WeeklyWeatherItem(weather: WeatherForecast) {
         ) {
             Text(
                 text = weather.date.toFormattedDate(),
+                modifier = Modifier.weight(1f),
                 style = MaterialTheme.typography.bodyMedium
             )
-            Text(text = "${weather.temp.toInt()}°C", style = MaterialTheme.typography.bodyLarge)
-            Text(text = weather.description, style = MaterialTheme.typography.bodySmall)
+            Text(
+                text = "${weather.temp.toInt()}°C",
+                modifier = Modifier.weight(1f),
+                style = MaterialTheme.typography.bodyLarge
+            )
+            Text(
+                text = weather.description,
+                modifier = Modifier.weight(1f),
+                style = MaterialTheme.typography.bodySmall
+            )
         }
     }
 }
