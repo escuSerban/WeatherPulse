@@ -13,8 +13,6 @@ fun CurrentWeatherDto.toWeatherForecast(): WeatherForecast {
         temp = this.temp,
         description = this.weather.firstOrNull()?.description.orEmpty(),
         icon = this.weather.firstOrNull()?.icon.orEmpty(),
-        sunrise = this.sunrise,
-        sunset = this.sunset,
         humidity = this.humidity,
         windSpeed = this.windSpeed
     )
@@ -29,8 +27,6 @@ fun DailyWeatherDto.toWeatherForecast(): WeatherForecast {
         temp = this.temp.day,
         description = this.weather.firstOrNull()?.description.orEmpty(),
         icon = this.weather.firstOrNull()?.icon.orEmpty(),
-        sunrise = this.sunrise,
-        sunset = this.sunset,
         humidity = this.humidity,
         windSpeed = this.windSpeed
     )
