@@ -60,7 +60,7 @@ fun WeatherScreen(
                     modifier = Modifier.align(Alignment.Start)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                WeeklyForecastList(state.weeklyWeather)
+                WeeklyForecastList(state.weeklyWeather.drop(1))
             }
         }
     }
