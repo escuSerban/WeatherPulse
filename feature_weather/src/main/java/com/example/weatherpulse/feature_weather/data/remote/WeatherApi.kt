@@ -11,13 +11,13 @@ interface WeatherApi {
     suspend fun getWeatherData(
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
-        @Query("units") units: String = "metric",
+        @Query("units") units: String = "metric"
     ): OneCallDto
 
     @GET("geo/1.0/direct")
     suspend fun getCoordinates(
         @Query("q") cityName: String,
-        @Query("limit") limit: Int = 1,
+        @Query("limit") limit: Int = 1
     ): List<GeoDirectDto>
 
 }
