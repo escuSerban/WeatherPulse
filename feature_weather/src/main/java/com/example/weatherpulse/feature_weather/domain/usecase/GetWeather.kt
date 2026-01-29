@@ -9,27 +9,28 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-/**
- * A use case that orchestrates fetching weather data for a given city.
- */
 class GetWeather @Inject constructor(
     private val repository: WeatherRepository,
     private val ioDispatcher: CoroutineDispatcher
 ) {
 
-    operator fun invoke(city: String): Flow<Resource<Pair<WeatherForecast, List<WeatherForecast>>>> = flow {
+    fun byCity(city: String): Flow<Resource<Pair<WeatherForecast, List<WeatherForecast>>>> = flow {
         emit(Resource.Loading())
         try {
-            val coordinates = repository.getCoordinates(city)
-            if (coordinates != null) {
-                val (lat, lon) = coordinates
-                val weatherData = repository.getWeatherForecasts(lat, lon)
-                emit(Resource.Success(weatherData))
-            } else {
-                emit(Resource.Error("City not found or invalid."))
-            }
+            val result = repository.getWeatherForecastsByCity(city)
+            emit(Resource.Success(result))
         } catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "An unknown error occurred while fetching weather data."))
+            emit(Resource.Error(e.message ?: "An unknown error occurred."))
+        }
+    }.flowOn(ioDispatcher)
+
+    fun byCoordinates(lat: Double, lon: Double): Flow<Resource<Pair<WeatherForecast, List<WeatherForecast>>>> = flow {
+        emit(Resource.Loading())
+        try {
+            val result = repository.getWeatherForecastsByCoordinates(lat, lon)
+            emit(Resource.Success(result))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message ?: "An unknown error occurred."))
         }
     }.flowOn(ioDispatcher)
 }

@@ -2,6 +2,7 @@ package com.example.weatherpulse.feature_weather.data.remote
 
 import com.example.weatherpulse.feature_weather.data.remote.dto.GeocodingDto
 import com.example.weatherpulse.feature_weather.data.remote.dto.OneCallDto
+import com.example.weatherpulse.feature_weather.data.remote.dto.ReverseGeocodingDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -22,4 +23,11 @@ interface WeatherApi {
         @Query("q") cityName: String,
         @Query("limit") limit: Int = 1
     ): List<GeocodingDto>
+
+    @GET("geo/1.0/reverse")
+    suspend fun getCityForCoordinates(
+        @Query("lat") lat: Double,
+        @Query("lon") lon: Double,
+        @Query("limit") limit: Int = 1
+    ): List<ReverseGeocodingDto>
 }

@@ -6,21 +6,22 @@ import com.example.weatherpulse.feature_weather.domain.model.WeatherForecast
 import com.example.weatherpulse.feature_weather.domain.repository.WeatherRepository
 import javax.inject.Inject
 
-/**
- * Implementation of the [WeatherRepository] interface.
- */
 class WeatherRepositoryImpl @Inject constructor(private val api: WeatherApi) : WeatherRepository {
 
-    override suspend fun getWeatherForecasts(lat: Double, lon: Double): Pair<WeatherForecast, List<WeatherForecast>> {
-        val response = api.getOneCallWeather(lat, lon)
-        val todaysWeather = response.current.toWeatherForecast()
-        val weeklyWeather = response.daily.map { it.toWeatherForecast() }
-        return Pair(todaysWeather, weeklyWeather)
+    override suspend fun getWeatherForecastsByCity(city: String): Pair<WeatherForecast, List<WeatherForecast>> {
+        val coordinates = api.getCoordinatesForCity(city).firstOrNull()
+            ?: throw Exception("City not found")
+        return getWeatherForecastsByCoordinates(coordinates.lat, coordinates.lon)
     }
 
-    override suspend fun getCoordinates(city: String): Pair<Double, Double>? {
-        val response = api.getCoordinatesForCity(city)
-        // Return the coordinates of the first result, or null if the list is empty.
-        return response.firstOrNull()?.let { it.lat to it.lon }
+    override suspend fun getWeatherForecastsByCoordinates(lat: Double, lon: Double): Pair<WeatherForecast, List<WeatherForecast>> {
+        val remoteForecasts = api.getOneCallWeather(lat, lon)
+        val today = remoteForecasts.current.toWeatherForecast()
+        val weekly = remoteForecasts.daily.map { it.toWeatherForecast() }
+        return today to weekly
+    }
+
+    override suspend fun getCityForCoordinates(lat: Double, lon: Double): String? {
+        return api.getCityForCoordinates(lat, lon).firstOrNull()?.name
     }
 }

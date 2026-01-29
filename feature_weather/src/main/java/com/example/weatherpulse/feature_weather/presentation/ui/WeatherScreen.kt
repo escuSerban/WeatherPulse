@@ -1,6 +1,11 @@
 package com.example.weatherpulse.feature_weather.presentation.ui
 
+import android.Manifest
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,12 +18,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -46,6 +53,22 @@ fun WeatherScreen(
     val state by viewModel.state.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { granted ->
+            if (!granted) {
+                viewModel.setPermissionsNotGrantedState()
+                return@rememberLauncherForActivityResult
+            }
+
+            viewModel.fetchWeatherForCurrentLocation()
+        }
+    )
+
+    LaunchedEffect(Unit) {
+        permissionLauncher.launch(ACCESS_FINE_LOCATION)
+    }
+
     LaunchedEffect(state.isLoading) {
         if (!state.isLoading) {
             keyboardController?.hide()
@@ -61,35 +84,50 @@ fun WeatherScreen(
         SearchBar(
             query = state.searchQuery,
             onQueryChange = viewModel::onSearchQueryChange,
-            onSearch = { viewModel.fetchWeatherForCity(it) }
+            onSearch = { viewModel.fetchWeatherForCity(it) },
+            onLocationClick = {
+                permissionLauncher.launch(ACCESS_FINE_LOCATION)
+            }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        when {
-            state.isLoading -> CircularProgressIndicator()
-            state.error != null -> Text(
-                text = state.error ?: "An unknown error occurred.",
-                color = MaterialTheme.colorScheme.error
-            )
-            state.todaysWeather == null -> EmptyState()
-            else -> {
-                state.todaysWeather?.let {
-                    TodayWeatherSection(it)
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                if (state.weeklyWeather.isNotEmpty()) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            when {
+                state.isLoading -> CircularProgressIndicator()
+                state.error != null -> {
                     Text(
-                        text = "Weekly Forecast",
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.align(Alignment.Start)
+                        text = state.error ?: "An unknown error occurred.",
+                        color = MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    WeeklyForecastList(state.weeklyWeather.drop(1))
+                }
+                state.todaysWeather == null -> EmptyState()
+                else -> {
+                    state.todaysWeather?.let {
+                        WeatherContent(it, state.weeklyWeather)
+                    }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun WeatherContent(
+    today: WeatherForecast,
+    weekly: List<WeatherForecast>
+) {
+    Column {
+        TodayWeatherSection(today)
+        Spacer(modifier = Modifier.height(24.dp))
+        if (weekly.isNotEmpty()) {
+            Text(
+                text = "Weekly Forecast",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            WeeklyForecastList(weekly.drop(1))
         }
     }
 }
@@ -120,12 +158,20 @@ fun EmptyState() {
 fun SearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
-    onSearch: (String) -> Unit
+    onSearch: (String) -> Unit,
+    onLocationClick: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        IconButton(onClick = onLocationClick) {
+            Icon(
+                imageVector = Icons.Default.MyLocation,
+                contentDescription = "Get Current Location"
+            )
+        }
+
         TextField(
             value = query,
             onValueChange = onQueryChange,
